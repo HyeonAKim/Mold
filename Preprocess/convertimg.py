@@ -1,5 +1,5 @@
 from PyPDF2 import PdfFileWriter, PdfFileReader
-from PIL import Image,ImageColor
+from PIL import Image as PILimge
 from wand.image import Image
 import cv2
 import shutil
@@ -22,9 +22,11 @@ def pdfsplit(inputfile, outfile):
         shutil.copy(inputfile, outfile)
 
 # pdf 이미지 변환 함수
-def pdf2img(inputfile, outfile) :
+def pdf2img(inputfile, outfile,extension) :
+    filename = os.path.splitext(os.path.basename(inputfile))[0]
+    outfilename = os.path.join(outfile,filename)
     with Image(filename=inputfile) as img:
-        img.save(filename=outfile)
+        img.save(filename=outfilename+'.'+extension)
 
 # 이미지 크기 변환
 def resizeimg(inputfile, outfile,mode):
@@ -45,4 +47,9 @@ def resizeimg(inputfile, outfile,mode):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-#
+# 이미지 확장자 변환
+def chageextension(inputfile,outfile,extension):
+    filename = os.path.splitext(os.path.basename(inputfile))[0]
+    outdir = os.path.join(outfile,filename+'.'+extension)
+    img = PILimge.open(inputfile)
+    img.save(outdir, format=extension, compress_level=1)
